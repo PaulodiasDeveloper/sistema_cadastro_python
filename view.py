@@ -14,7 +14,7 @@ def inserir_form(i):
 
 
 # Atualizar dados
-def atulizar_(i):
+def atualizar_(i):
     with con:
         cur = con.cursor()
         query = "UPDATE inventario SET nome=?, local=?, descricao=?, marca=?, data_da_compra=?, valor_da_compra=?, serie=?, imagem=? WHERE id=?"
@@ -45,14 +45,10 @@ def ver_form():
 
 # Ver dados individual
 def ver_item(id):
-    ver_dados_individual = []
     with con:
         cur = con.cursor()
         query = "SELECT * FROM inventario WHERE id=?"
-        cur.execute(query, id)
-
-        rows = cur.fetchall()
-        for row in rows:
-            ver_dados_individual.append(row)
-
-    return ver_dados_individual
+        # O segundo argumento de execute deve ser uma tupla
+        cur.execute(query, (id,))
+        # fetchone() é mais apropriado para buscar um item único por ID
+        return cur.fetchone()

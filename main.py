@@ -144,7 +144,7 @@ def atualizar():
                 if i == '':
                     messagebox.showerror('Erro', 'Preencha todos os campos!')
                     return
-            atulizar_(lista_atualizar)
+            atualizar_(lista_atualizar)
 
             messagebox.showinfo('Sucesso', 'Item atualizado com sucesso!')
 
@@ -217,12 +217,16 @@ def ver_imagem():
     # Obtendo os valores do item selecionado
     treev_lista = treev_dicionario['values']
 
-    valor = [int(treev_lista[0])]
+    id_item = int(treev_lista[0])
 
-    iten = ver_item(valor)
+    item = ver_item(id_item)
 
-    imagem = iten[0][8]
+    if not item or not item[8]:
+        messagebox.showwarning(
+            'Aviso', 'Este item não possui imagem associada.')
+        return
 
+    imagem = item[8]
     # Abrindo Imagem
     imagem = Image.open(imagem)
     imagem = imagem.resize((150, 150))
@@ -423,13 +427,18 @@ def mostrar():
     for item in lista_itens:
         tree.insert('', 'end', values=item)
 
-    quantidade = [8888, 88]
+    valores = []
+    for item in lista_itens:
+        try:
+            # A coluna 6 corresponde ao 'valor_da_compra'
+            valor_str = str(item[6]).replace(',', '.')
+            valores.append(float(valor_str))
+        except (ValueError, TypeError):
+            # Ignora valores que não podem ser convertidos para float
+            continue
 
-    for iten in lista_itens:
-        quantidade.append(iten[6])
-
-    Total_valor = sum(quantidade)
-    Total_itens = len(quantidade)
+    Total_valor = sum(valores)
+    Total_itens = len(lista_itens)
 
     l_total['text'] = 'R$ {:,.2f}'.format(Total_valor)
     l_qtd['text'] = Total_itens
