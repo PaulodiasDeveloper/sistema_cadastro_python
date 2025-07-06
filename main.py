@@ -92,6 +92,102 @@ def inserir():
     mostrar()  # Atualizando a tabela com os novos dados
 
 
+# Função atualizar
+def atualizar():
+    global imagem, imagem_string, l_imagem
+    try:
+        treev_dados = tree.focus()  # Obtendo o item selecionado na tabela
+        # Obtendo os dados do item selecionado
+        treev_dicionario = tree.item(treev_dados)
+        # Obtendo os valores do item selecionado
+        treev_lista = treev_dicionario['values']
+
+        valor = treev_lista[0]  # Obtendo o ID do item selecionado
+
+        entrada_nome.delete(0, END)
+        entrada_local.delete(0, END)
+        entrada_descricao.delete(0, END)
+        entrada_modelo.delete(0, END)
+        entrada_calendario.delete(0, END)
+        entrada_valor_compra.delete(0, END)
+        entrada_serial.delete(0, END)
+
+        id = int(treev_lista[0])  # Convertendo o ID para inteiro
+        entrada_nome.insert(0, treev_lista[1])
+        entrada_local.insert(0, treev_lista[2])
+        entrada_descricao.insert(0, treev_lista[3])
+        entrada_modelo.insert(0, treev_lista[4])
+        entrada_calendario.insert(0, treev_lista[5])
+        entrada_valor_compra.insert(0, treev_lista[6])
+        entrada_serial.insert(0, treev_lista[7])
+        imagem_string = treev_lista[8]  # Obtendo a imagem do item selecionado
+
+        def update():
+            global imagem, imagem_string, l_imagem
+
+            nome = entrada_nome.get()
+            local = entrada_local.get()
+            descricao = entrada_descricao.get()
+            modelo = entrada_modelo.get()
+            data_compra = entrada_calendario.get()
+            valor_compra = entrada_valor_compra.get()
+            serial = entrada_serial.get()
+            imagem = imagem_string
+
+            if imagem == '':
+                imagem = entrada_serial.insert(0, treev_lista[7])
+
+            lista_atualizar = [nome, local, descricao, modelo,
+                               data_compra, valor_compra, serial, imagem, id]
+
+            for i in lista_atualizar:
+                if i == '':
+                    messagebox.showerror('Erro', 'Preencha todos os campos!')
+                    return
+            atulizar_(lista_atualizar)
+
+            messagebox.showinfo('Sucesso', 'Item atualizado com sucesso!')
+
+            entrada_nome.delete(0, END)
+            entrada_local.delete(0, END)
+            entrada_descricao.delete(0, END)
+            entrada_modelo.delete(0, END)
+            entrada_calendario.delete(0, END)
+            entrada_valor_compra.delete(0, END)
+            entrada_serial.delete(0, END)
+
+            b_confirmar.destroy()  # Removendo o botão de confirmação
+
+            mostrar()  # Atualizando a tabela com os novos dados
+
+        b_confirmar = Button(frameMeio, command=update, width=13, text='  Confirmar'.upper(
+        ), overrelief=RIDGE, font=('Ivy 8 bold'), bg=co2, fg=co1)
+        b_confirmar.place(x=400, y=185)
+
+    except IndexError:
+        messagebox.showerror('Erro', 'Selecione um item para atualizar!')
+
+
+# Função deletar
+def deletar():
+    try:
+        treev_dados = tree.focus()  # Obtendo o item selecionado na tabela
+        # Obtendo os dados do item selecionado
+        treev_dicionario = tree.item(treev_dados)
+        # Obtendo os valores do item selecionado
+        treev_lista = treev_dicionario['values']
+        valor = treev_lista[0]  # Obtendo o ID do item selecionado
+
+        deletar_form([valor])  # Convertendo o ID para inteiro
+
+        messagebox.showinfo('Sucesso', 'Item deletado com sucesso!')
+
+        mostrar()  # Atualizando a tabela com os novos dados
+
+    except IndexError:
+        messagebox.showerror('Erro', 'Selecione um item da tabela!')
+
+
 # Função para escolher imagem
 global imagem_string, l_imagem
 
@@ -109,18 +205,6 @@ def escolher_imagem():
 
     l_imagem = Label(frameMeio, image=imagem, bg=co1, fg=co4)
     l_imagem.place(x=735, y=10)
-
-
-# Trabalhando no frame cima--------------------------
-# Abrindo Imagem
-app_img = Image.open("./assets/img/inventory2.png")
-app_img = app_img.resize((45, 45))
-app_img = ImageTk.PhotoImage(app_img)
-
-
-app_logo = Label(frameCima, image=app_img, text=' Inventário Doméstico', width=900,
-                 compound=LEFT, relief=RAISED, anchor=NW, font=('Verdana 20 bold'), bg=co7, fg=co1)
-app_logo.place(x=0, y=0)
 
 
 # Função para ver imgem
@@ -146,6 +230,18 @@ def ver_imagem():
 
     l_imagem = Label(frameMeio, image=imagem, bg=co1, fg=co4)
     l_imagem.place(x=740, y=10)
+
+
+# Trabalhando no frame cima--------------------------
+# Abrindo Imagem
+app_img = Image.open("./assets/img/inventory2.png")
+app_img = app_img.resize((45, 45))
+app_img = ImageTk.PhotoImage(app_img)
+
+
+app_logo = Label(frameCima, image=app_img, text=' Inventário Doméstico', width=900,
+                 compound=LEFT, relief=RAISED, anchor=NW, font=('Verdana 20 bold'), bg=co7, fg=co1)
+app_logo.place(x=0, y=0)
 
 
 # Trabalhando no frame do meio-----------------------
@@ -243,7 +339,7 @@ img_update = Image.open("./assets/img/sync.png")
 img_update = img_update.resize((20, 20))
 img_update = ImageTk.PhotoImage(img_update)
 
-b_update = Button(frameMeio, image=img_update, width=95, text='  ATUALIZAR'.upper(), compound=LEFT,
+b_update = Button(frameMeio, command=atualizar, image=img_update, width=95, text='  ATUALIZAR'.upper(), compound=LEFT,
                   anchor=NW, overrelief=RIDGE, font=('Ivy 8'), bg=co1, fg=co0)
 b_update.place(x=400, y=50)
 
@@ -253,7 +349,7 @@ img_delete = Image.open("./assets/img/delete.png")
 img_delete = img_delete.resize((20, 20))
 img_delete = ImageTk.PhotoImage(img_delete)
 
-b_delete = Button(frameMeio, image=img_delete, width=95, text='  DELETAR'.upper(), compound=LEFT,
+b_delete = Button(frameMeio, command=deletar, image=img_delete, width=95, text='  DELETAR'.upper(), compound=LEFT,
                   anchor=NW, overrelief=RIDGE, font=('Ivy 8'), bg=co1, fg=co0)
 b_delete.place(x=400, y=90)
 
