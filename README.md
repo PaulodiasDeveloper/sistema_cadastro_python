@@ -84,3 +84,6 @@ sistema_cadastro_python/
 ├── view.py             # Módulo de acesso ao banco de dados (CRUD)
 └── README.md           # Este arquivo
 ```
+## 🎞️ Vídeo no Steramlit
+
+[streamlit-app-2025-03-09-18-03-23.webm](https://github.com/user-attachments/assets/f798846b-754a-4721-ba39-b3290ae742af)
